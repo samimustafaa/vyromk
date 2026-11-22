@@ -21,6 +21,8 @@ import { HomePage } from './pages/HomePage'
 import { ProductDetailPage } from './pages/ProductDetailPage'
 import { ShopPage } from './pages/ShopPage'
 import { TrackOrderPage } from './pages/TrackOrderPage'
+import { SavedPage } from './pages/SavedPage'
+import { WishlistDrawer } from './components/WishlistDrawer'
 
 function NotFound() {
   return (
@@ -36,6 +38,7 @@ function NotFound() {
 /** Storefront shell — header, footer, cart and checkout only. */
 function StorefrontShell() {
   const location = useLocation()
+  const { wishOpen, setWishOpen } = useStore()
 
   return (
     <div className="app-root">
@@ -47,11 +50,13 @@ function StorefrontShell() {
           <Route path="/product/:slug" element={<ProductDetailPage />} />
           <Route path="/about" element={<AboutPage />} />
           <Route path="/track-order" element={<TrackOrderPage />} />
+          <Route path="/saved" element={<SavedPage />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
       </main>
       <Footer />
       <CartDrawer />
+      <WishlistDrawer open={wishOpen} onClose={() => setWishOpen(false)} />
       <CheckoutModal />
     </div>
   )

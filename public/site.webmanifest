@@ -1,0 +1,15 @@
+{
+  "name": "VYRO MK — Your Style. Your Move.",
+  "short_name": "VYRO MK",
+  "description": "Sneakers and streetwear in North Macedonia. Delivery 24–48h, cash on delivery.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#101010",
+  "theme_color": "#101010",
+  "lang": "mk",
+  "icons": [
+    { "src": "/icon-192.png", "sizes": "192x192", "type": "image/png" },
+    { "src": "/icon-512.png", "sizes": "512x512", "type": "image/png" },
+    { "src": "/favicon.svg", "sizes": "any", "type": "image/svg+xml" }
+  ]
+}

@@ -2,9 +2,13 @@ import { useState, type FormEvent } from 'react'
 import { Link } from 'react-router-dom'
 import { useStore } from '../context/StoreContext'
 import { formatMkd } from '../data/products'
+import { t } from '../i18n'
+import { staticMeta } from '../seo/meta'
+import { usePageMeta } from '../seo/usePageMeta'
 
 export function TrackOrderPage() {
   const { lang, orders, findOrder } = useStore()
+  usePageMeta(staticMeta('/track-order'))
   const [query, setQuery] = useState('')
   const [result, setResult] = useState<ReturnType<typeof findOrder> | null>(null)
   const [searched, setSearched] = useState(false)
@@ -24,12 +28,10 @@ export function TrackOrderPage() {
       <section className="shop-header">
         <div className="container">
           <h1 className="display-title shop-title">
-            {lang === 'mk' ? 'Следи нарачка' : 'Track Your Order'}
+            {t(lang, 'Следи нарачка', 'Track Your Order')}
           </h1>
           <p className="shop-sub">
-            {lang === 'mk'
-              ? 'Внеси го бројот на нарачка (пр. VYRO-1234) за да провериш статус.'
-              : 'Enter your order number (e.g. VYRO-1234) to check its status.'}
+            {t(lang, 'Внеси го бројот на нарачка (пр. VYRO-1234) за да провериш статус.', 'Enter your order number (e.g. VYRO-1234) to check its status.')}
           </p>
           <form className="track-form" onSubmit={handleSearch}>
             <input
@@ -41,12 +43,12 @@ export function TrackOrderPage() {
               className="shop-search"
             />
             <button type="submit" className="btn btn-lime">
-              {lang === 'mk' ? 'Провери' : 'Track'}
+              {t(lang, 'Провери', 'Track')}
             </button>
           </form>
           {latestOrder && (
             <p className="track-hint">
-              {lang === 'mk' ? 'Последна нарачка: ' : 'Latest order: '}
+              {t(lang, 'Последна нарачка: ', 'Latest order: ')}
               <button type="button" className="track-hint-btn" onClick={() => { setQuery(latestOrder.id); setResult(latestOrder); setSearched(true) }}>
                 {latestOrder.id}
               </button>
@@ -59,8 +61,8 @@ export function TrackOrderPage() {
         <div className="container">
           {!result && searched && (
             <div className="empty-search">
-              <p>{lang === 'mk' ? 'Нарачката не е пронајдена. Провери го бројот.' : 'Order not found. Double-check the order number.'}</p>
-              <Link to="/shop" className="btn btn-dark">{lang === 'mk' ? 'Кон продавница' : 'Back to shop'}</Link>
+              <p>{t(lang, 'Нарачката не е пронајдена. Провери го бројот.', 'Order not found. Double-check the order number.')}</p>
+              <Link to="/shop" className="btn btn-dark">{t(lang, 'Кон продавница', 'Back to shop')}</Link>
             </div>
           )}
 
@@ -85,10 +87,10 @@ export function TrackOrderPage() {
                       <span className="track-dot" />
                       <span className="track-label">
                         {step === 'pending'
-                          ? lang === 'mk' ? 'Примена' : 'Order placed'
+                          ? t(lang, 'Примена', 'Order placed')
                           : step === 'shipped'
-                            ? lang === 'mk' ? 'Испратена' : 'Shipped'
-                            : lang === 'mk' ? 'Доставена' : 'Delivered'}
+                            ? t(lang, 'Испратена', 'Shipped')
+                            : t(lang, 'Доставена', 'Delivered')}
                       </span>
                     </div>
                   )
@@ -98,7 +100,7 @@ export function TrackOrderPage() {
               <ul className="track-items">
                 {result.items.map((item, i) => (
                   <li key={i}>
-                    <span>{item.name} — {lang === 'mk' ? 'број' : 'size'} {item.size} × {item.quantity}</span>
+                    <span>{item.name} — {t(lang, 'број', 'size')} {item.size} × {item.quantity}</span>
                     <span>{formatMkd(item.priceMkd * item.quantity)}</span>
                   </li>
                 ))}

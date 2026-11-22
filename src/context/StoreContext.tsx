@@ -1,4 +1,5 @@
 import { createContext, useContext, useEffect, useState, type ReactNode } from 'react'
+import { DEFAULT_LANG, t, type Lang as LangT } from '../i18n'
 import {
   DEFAULT_CATEGORIES,
   FREE_SHIPPING_MKD,
@@ -8,7 +9,7 @@ import {
   type Product,
 } from '../data/products'
 
-export type Lang = 'en' | 'mk'
+export type { Lang } from '../i18n'
 
 export interface CartItem {
   product: Product
@@ -51,6 +52,7 @@ export interface StoreOrder {
 export interface SiteSettings {
   promoBannerEn: string
   promoBannerMk: string
+  promoBannerSq?: string
   freeShippingMkd: number
 }
 
@@ -66,8 +68,8 @@ export interface Review {
 export type Stock = Record<string, number>
 
 interface StoreContextValue {
-  lang: Lang
-  setLang: (lang: Lang) => void
+  lang: LangT
+  setLang: (lang: LangT) => void
   products: Product[]
   categories: CategoryDef[]
   addCategory: (category: Omit<CategoryDef, 'slug'>) => boolean
@@ -106,6 +108,8 @@ interface StoreContextValue {
   updateSettings: (patch: Partial<SiteSettings>) => void
   wishlist: string[]
   toggleWishlist: (productId: string) => void
+  wishOpen: boolean
+  setWishOpen: (open: boolean) => void
   cart: CartItem[]
   addToCart: (product: Product, size: string) => void
   updateQty: (productId: string, size: string, delta: number) => void
@@ -147,6 +151,7 @@ const DEFAULT_DISCOUNTS: DiscountCode[] = [
 const DEFAULT_SETTINGS: SiteSettings = {
   promoBannerEn: 'Free delivery over 3,500 MKD • Cash on delivery across North Macedonia • Use code VYRO10 for 10% off',
   promoBannerMk: 'Бесплатна достава над 3,500 MKD • Плаќање при достава • Код VYRO10 за 10% попуст',
+  promoBannerSq: 'Dërgim falas mbi 3,500 MKD • Pagesë në dorëzim • Kodi VYRO10 për 10% zbritje',
   freeShippingMkd: FREE_SHIPPING_MKD,
 }
 
@@ -219,13 +224,14 @@ function usePersisted<T>(key: string, initial: T, normalize?: (value: T) => T) {
 }
 
 export function StoreProvider({ children }: { children: ReactNode }) {
-  const [lang, setLang] = useState<Lang>('en')
+  const [lang, setLang] = useState<LangT>(DEFAULT_LANG)
   const [products, setProducts] = usePersisted<Product[]>(KEYS.products, PRODUCTS, normalizeProducts)
   const [categories, setCategories] = usePersisted<CategoryDef[]>(KEYS.categories, DEFAULT_CATEGORIES)
   const [discounts, setDiscounts] = usePersisted<DiscountCode[]>(KEYS.discounts, DEFAULT_DISCOUNTS)
   const [orders, setOrders] = usePersisted<StoreOrder[]>(KEYS.orders, [])
   const [settings, setSettings] = usePersisted<SiteSettings>(KEYS.settings, DEFAULT_SETTINGS)
   const [wishlist, setWishlist] = usePersisted<string[]>(KEYS.wishlist, [])
+  const [wishOpen, setWishOpen] = useState(false)
   const [cart, setCart] = usePersisted<CartItem[]>(KEYS.cart, [])
   const [stock, setStockState] = usePersisted<Stock>(KEYS.stock, seedStock(PRODUCTS))
   const [reviews, setReviews] = usePersisted<Review[]>(KEYS.reviews, DEFAULT_REVIEWS)
@@ -354,12 +360,12 @@ export function StoreProvider({ children }: { children: ReactNode }) {
     if (!match) {
       return {
         ok: false,
-        message: lang === 'mk' ? 'Невалиден или неактивен код.' : 'Invalid or inactive promo code.',
+        message: t(lang, 'Невалиден или неактивен код.', 'Invalid or inactive promo code.'),
       }
     }
     setAppliedCode(match.code)
     const label = match.type === 'percent' ? `${match.value}%` : `${match.value} MKD`
-    showToast(lang === 'mk' ? `Применет попуст ${label}!` : `Applied ${label} off with ${match.code}!`)
+    showToast(t(lang, `Применет попуст ${label}!`, `Applied ${label} off with ${match.code}!`))
     return { ok: true, message: `${match.code} applied` }
   }
 
@@ -395,7 +401,7 @@ export function StoreProvider({ children }: { children: ReactNode }) {
       { ...review, id: `rev-${Date.now()}`, createdAt: new Date().toISOString().slice(0, 10) },
       ...prev,
     ])
-    showToast(lang === 'mk' ? 'Благодариме за оценката!' : 'Thanks for your review!')
+    showToast(t(lang, 'Благодариме за оценката!', 'Thanks for your review!'))
   }
 
   const deleteReview = (id: string) => {
@@ -423,7 +429,7 @@ export function StoreProvider({ children }: { children: ReactNode }) {
       added = true
       return [clean, ...prev]
     })
-    if (added) showToast(lang === 'mk' ? 'Се пријавивте за известувања!' : 'You are on the drop list!')
+    if (added) showToast(t(lang, 'Се пријавивте за известувања!', 'You are on the drop list!'))
     return added
   }
 
@@ -438,8 +444,8 @@ export function StoreProvider({ children }: { children: ReactNode }) {
       const next = exists ? prev.filter((id) => id !== productId) : [...prev, productId]
       showToast(
         exists
-          ? lang === 'mk' ? 'Отстрането од омилени' : 'Removed from saved'
-          : lang === 'mk' ? 'Зачувано во омилени' : 'Saved to wishlist',
+          ? t(lang, 'Отстрането од омилени', 'Removed from saved')
+          : t(lang, 'Зачувано во омилени', 'Saved to wishlist'),
       )
       return next
     })
@@ -448,15 +454,13 @@ export function StoreProvider({ children }: { children: ReactNode }) {
   const addToCart = (product: Product, size: string) => {
     const available = getStock(product.id, size)
     if (available <= 0) {
-      showToast(lang === 'mk' ? 'Овој број е распродаден.' : 'That size is sold out.')
+      showToast(t(lang, 'Овој број е распродаден.', 'That size is sold out.'))
       return
     }
     const existing = cart.find((i) => i.product.id === product.id && i.size === size)
     if (existing && existing.quantity >= available) {
       showToast(
-        lang === 'mk'
-          ? `Достапни се само ${available} пара во овој број.`
-          : `Only ${available} left in that size.`,
+        t(lang, `Достапни се само ${available} пара во овој број.`, `Only ${available} left in that size.`),
       )
       return
     }
@@ -471,9 +475,7 @@ export function StoreProvider({ children }: { children: ReactNode }) {
     })
     setCartOpen(true)
     showToast(
-      lang === 'mk'
-        ? `Додадено: ${product.name} (${size})`
-        : `Added ${product.name} (${size}) to bag`,
+      t(lang, `Додадено: ${product.name} (${size})`, `Added ${product.name} (${size}) to bag`),
     )
   }
 
@@ -559,6 +561,8 @@ export function StoreProvider({ children }: { children: ReactNode }) {
         updateSettings,
         wishlist,
         toggleWishlist,
+        wishOpen,
+        setWishOpen,
         cart,
         addToCart,
         updateQty,

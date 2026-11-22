@@ -1,8 +1,11 @@
 import { Link } from 'react-router-dom'
 import { ProductCard } from '../components/ProductCard'
 import { useStore } from '../context/StoreContext'
-import { formatMkd, matchesGender } from '../data/products'
+import { homeMeta } from '../seo/meta'
+import { usePageMeta } from '../seo/usePageMeta'
+import { categoryLabel, formatMkd, matchesGender } from '../data/products'
 import { TruckIcon, CashIcon, ExchangeIcon, PriceTagIcon } from '../components/Icons'
+import { t } from '../i18n'
 
 export function HomePage() {
   const { lang, products, addToCart, categories } = useStore()
@@ -10,6 +13,8 @@ export function HomePage() {
   const womenCount = products.filter((p) => matchesGender(p, 'women')).length
   const featured = products.filter((p) => p.featured).slice(0, 8)
   const heroProduct = products[0]
+  usePageMeta(homeMeta(products))
+
 
   return (
     <div className="home-page">
@@ -19,13 +24,21 @@ export function HomePage() {
           <div className="hero-copy">
             <p className="hero-kicker">VYRO MK • DROP 01</p>
             <h1 className="display-title hero-headline">
-              {lang === 'mk' ? (
+              {lang === 'mk' && (
                 <>
                   Твој стил.
                   <br />
                   Твој потег.
                 </>
-              ) : (
+              )}
+              {lang === 'sq' && (
+                <>
+                  Stili yt.
+                  <br />
+                  Lëvizja jote.
+                </>
+              )}
+              {lang === 'en' && (
                 <>
                   Your Style.
                   <br />
@@ -34,16 +47,14 @@ export function HomePage() {
               )}
             </h1>
             <p className="hero-sub">
-              {lang === 'mk'
-                ? 'Патики и улична облека по достапни цени. Брза достава низ цела Македонија и плаќање при прием.'
-                : 'Sneakers and streetwear at accessible prices. Clean silhouettes, fast 24–48h delivery across North Macedonia, pay on delivery.'}
+              {t(lang, 'Патики и улична облека по достапни цени. Брза достава низ цела Македонија и плаќање при прием.', 'Sneakers and streetwear at accessible prices. Clean silhouettes, fast 24–48h delivery across North Macedonia, pay on delivery.')}
             </p>
             <div className="hero-actions">
               <Link to="/shop" className="btn btn-lime">
-                {lang === 'mk' ? 'Разгледај колекција' : 'Shop the Drop'}
+                {t(lang, 'Разгледај колекција', 'Shop the Drop')}
               </Link>
               <Link to="/shop?category=sneakers" className="btn btn-outline-light">
-                {lang === 'mk' ? 'Сите патики' : 'Explore Sneakers'}
+                {t(lang, 'Сите патики', 'Explore Sneakers')}
               </Link>
             </div>
           </div>
@@ -63,7 +74,7 @@ export function HomePage() {
                 className="btn btn-lime"
                 onClick={() => addToCart(heroProduct, '42')}
               >
-                {lang === 'mk' ? 'Брза нарачка (42)' : 'Quick Add (42)'}
+                {t(lang, 'Брза нарачка (42)', 'Quick Add (42)')}
               </button>
             </div>
           </div>
@@ -78,8 +89,8 @@ export function HomePage() {
               <TruckIcon />
             </span>
             <div className="trust-copy">
-              <strong>{lang === 'mk' ? '24–48ч Достава' : '24–48h Delivery'}</strong>
-              <span>{lang === 'mk' ? 'До секој град во МК' : 'Every city in Macedonia'}</span>
+              <strong>{t(lang, '24–48ч Достава', '24–48h Delivery')}</strong>
+              <span>{t(lang, 'До секој град во МК', 'Every city in Macedonia')}</span>
             </div>
           </div>
           <div className="trust-item">
@@ -87,8 +98,8 @@ export function HomePage() {
               <CashIcon />
             </span>
             <div className="trust-copy">
-              <strong>{lang === 'mk' ? 'Плаќање при достава' : 'Cash on Delivery'}</strong>
-              <span>{lang === 'mk' ? 'Без ризик, плати на курир' : 'Zero risk, pay at your door'}</span>
+              <strong>{t(lang, 'Плаќање при достава', 'Cash on Delivery')}</strong>
+              <span>{t(lang, 'Без ризик, плати на курир', 'Zero risk, pay at your door')}</span>
             </div>
           </div>
           <div className="trust-item">
@@ -96,8 +107,8 @@ export function HomePage() {
               <ExchangeIcon />
             </span>
             <div className="trust-copy">
-              <strong>{lang === 'mk' ? 'Лесна замена на број' : 'Easy Size Exchange'}</strong>
-              <span>{lang === 'mk' ? '7 дена можност за замена' : '7-day hassle-free swap'}</span>
+              <strong>{t(lang, 'Лесна замена на број', 'Easy Size Exchange')}</strong>
+              <span>{t(lang, '7 дена можност за замена', '7-day hassle-free swap')}</span>
             </div>
           </div>
           <div className="trust-item">
@@ -105,8 +116,8 @@ export function HomePage() {
               <PriceTagIcon />
             </span>
             <div className="trust-copy">
-              <strong>{lang === 'mk' ? 'Достапни цени' : 'Fair Street Pricing'}</strong>
-              <span>{lang === 'mk' ? 'Врвен изглед без преплата' : 'Sharp looks, no markup'}</span>
+              <strong>{t(lang, 'Достапни цени', 'Fair Street Pricing')}</strong>
+              <span>{t(lang, 'Врвен изглед без преплата', 'Sharp looks, no markup')}</span>
             </div>
           </div>
         </div>
@@ -118,16 +129,14 @@ export function HomePage() {
           <div className="section-head">
             <div>
               <h2 className="display-title section-title-dark">
-                {lang === 'mk' ? 'Најбарани модели' : 'Featured Drop'}
+                {t(lang, 'Најбарани модели', 'Featured Drop')}
               </h2>
               <p className="section-sub-dark">
-                {lang === 'mk'
-                  ? 'Одбери број и додај во кошничка со еден клик.'
-                  : 'Pick your size and add straight to your bag.'}
+                {t(lang, 'Одбери број и додај во кошничка со еден клик.', 'Pick your size and add straight to your bag.')}
               </p>
             </div>
             <Link to="/shop" className="btn btn-outline-dark">
-              {lang === 'mk' ? `Види ги сите (${products.length})` : `View All (${products.length})`}
+              {t(lang, `Види ги сите (${products.length})`, `View All (${products.length})`)}
             </Link>
           </div>
 
@@ -148,19 +157,17 @@ export function HomePage() {
           <div className="lookbook-copy">
             <span className="lime-pill">VYRO STREETWEAR</span>
             <h2 className="display-title lookbook-title">
-              {lang === 'mk' ? 'Создадено за движење.' : 'Built for the street.'}
+              {t(lang, 'Создадено за движење.', 'Built for the street.')}
             </h2>
             <p className="lookbook-text">
-              {lang === 'mk'
-                ? 'Тешки 440г дуксери, оверсајз маици и чисти силуети на патики — сè што ти треба за комплетен аутфит без компромис.'
-                : 'Heavyweight 440gsm hoodies, boxy tees, and clean sneaker silhouettes—everything you need to lock in a complete fit without overpaying.'}
+              {t(lang, 'Тешки 440г дуксери, оверсајз маици и чисти силуети на патики — сè што ти треба за комплетен аутфит без компромис.', 'Heavyweight 440gsm hoodies, boxy tees, and clean sneaker silhouettes—everything you need to lock in a complete fit without overpaying.')}
             </p>
             <div className="lookbook-actions">
               <Link to="/shop?category=apparel" className="btn btn-lime">
-                {lang === 'mk' ? 'Купи облека' : 'Shop Apparel'}
+                {t(lang, 'Купи облека', 'Shop Apparel')}
               </Link>
               <Link to="/about" className="btn btn-outline-light">
-                {lang === 'mk' ? 'Нашата приказна' : 'Our Story'}
+                {t(lang, 'Нашата приказна', 'Our Story')}
               </Link>
             </div>
           </div>
@@ -172,11 +179,9 @@ export function HomePage() {
         <div className="container">
           <div className="section-head">
             <div>
-              <h2 className="display-title section-title">{lang === 'mk' ? 'За него и за неа' : 'Shop Men & Women'}</h2>
+              <h2 className="display-title section-title">{t(lang, 'За него и за неа', 'Shop Men & Women')}</h2>
               <p className="section-sub">
-                {lang === 'mk'
-                  ? 'Унисекс моделите се појавуваат во двете секции.'
-                  : 'Unisex styles show up in both sections.'}
+                {t(lang, 'Унисекс моделите се појавуваат во двете секции.', 'Unisex styles show up in both sections.')}
               </p>
             </div>
           </div>
@@ -184,26 +189,26 @@ export function HomePage() {
             <Link to="/shop?gender=men" className="gender-card">
               <img src="/products/street.avif" alt="VYRO MK men's collection" loading="lazy" />
               <div className="gender-card-overlay">
-                <span className="lime-pill">{lang === 'mk' ? 'КОЛЕКЦИЈА' : 'COLLECTION'}</span>
-                <h3 className="display-title">{lang === 'mk' ? 'Мажи' : 'Men'}</h3>
+                <span className="lime-pill">{t(lang, 'КОЛЕКЦИЈА', 'COLLECTION')}</span>
+                <h3 className="display-title">{t(lang, 'Мажи', 'Men')}</h3>
                 <span className="gender-card-count">
-                  {menCount} {lang === 'mk' ? 'модели' : 'styles'}
+                  {menCount} {t(lang, 'модели', 'styles')}
                 </span>
                 <span className="gender-card-cta">
-                  {lang === 'mk' ? 'Купи сега' : 'Shop now'}
+                  {t(lang, 'Купи сега', 'Shop now')}
                 </span>
               </div>
             </Link>
             <Link to="/shop?gender=women" className="gender-card">
               <img src="/products/look.avif" alt="VYRO MK women's collection" loading="lazy" />
               <div className="gender-card-overlay">
-                <span className="lime-pill">{lang === 'mk' ? 'КОЛЕКЦИЈА' : 'COLLECTION'}</span>
-                <h3 className="display-title">{lang === 'mk' ? 'Жени' : 'Women'}</h3>
+                <span className="lime-pill">{t(lang, 'КОЛЕКЦИЈА', 'COLLECTION')}</span>
+                <h3 className="display-title">{t(lang, 'Жени', 'Women')}</h3>
                 <span className="gender-card-count">
-                  {womenCount} {lang === 'mk' ? 'модели' : 'styles'}
+                  {womenCount} {t(lang, 'модели', 'styles')}
                 </span>
                 <span className="gender-card-cta">
-                  {lang === 'mk' ? 'Купи сега' : 'Shop now'}
+                  {t(lang, 'Купи сега', 'Shop now')}
                 </span>
               </div>
             </Link>
@@ -216,7 +221,7 @@ export function HomePage() {
         <div className="container">
           <div className="section-head">
             <h2 className="display-title section-title-dark">
-              {lang === 'mk' ? 'Купувај по категорија' : 'Shop by Category'}
+              {t(lang, 'Купувај по категорија', 'Shop by Category')}
             </h2>
           </div>
 
@@ -227,9 +232,9 @@ export function HomePage() {
                 <Link key={c.slug} to={`/shop?category=${c.slug}`} className="category-tile">
                   <img src={c.image} alt={c.labelEn} loading="lazy" />
                   <div className="category-overlay">
-                    <h3 className="display-title">{lang === 'mk' ? c.labelMk : c.labelEn}</h3>
+                    <h3 className="display-title">{categoryLabel(categories, c.slug, lang)}</h3>
                     <span>
-                      {count} {lang === 'mk' ? 'модели' : 'styles'}
+                      {count} {t(lang, 'модели', 'styles')}
                     </span>
                   </div>
                 </Link>
@@ -244,14 +249,14 @@ export function HomePage() {
         <div className="container dm-banner-inner">
           <div>
             <h2 className="display-title dm-title">
-              {lang === 'mk' ? 'Преферираш нарачка во порака?' : 'Prefer ordering in DM?'}
+              {t(lang, 'Преферираш нарачка во порака?', 'Prefer ordering in DM?')}
             </h2>
             <p className="dm-sub">
               Патики и облека по достапни цени. Твој стил. Твој потег. Нарачај директно овде или пиши ни на <strong>@vyro.mk</strong>.
             </p>
           </div>
           <Link to="/shop" className="btn btn-dark">
-            {lang === 'mk' ? 'Избери модел' : 'Pick Your Pair'}
+            {t(lang, 'Избери модел', 'Pick Your Pair')}
           </Link>
         </div>
       </section>

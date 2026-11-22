@@ -2,6 +2,7 @@ import { useState, type FormEvent } from 'react'
 import { Link } from 'react-router-dom'
 import { useStore } from '../context/StoreContext'
 import { formatMkd } from '../data/products'
+import { t } from '../i18n'
 
 export function CartDrawer() {
   const {
@@ -59,9 +60,7 @@ export function CartDrawer() {
       navigator.clipboard.writeText(msg).catch(() => {})
     }
     showToast(
-      lang === 'mk'
-        ? 'Нарачката е копирана! Испрати порака на @vyro.mk'
-        : 'Order copied! Paste in DM to @vyro.mk',
+      t(lang, 'Нарачката е копирана! Испрати порака на @vyro.mk', 'Order copied! Paste in DM to @vyro.mk'),
     )
   }
 
@@ -71,12 +70,12 @@ export function CartDrawer() {
         className="cart-drawer"
         role="dialog"
         aria-modal="true"
-        aria-label={lang === 'mk' ? 'Кошничка' : 'Shopping bag'}
+        aria-label={t(lang, 'Кошничка', 'Shopping bag')}
         onClick={(e) => e.stopPropagation()}
       >
         <div className="drawer-header">
           <h2 className="display-title drawer-title">
-            {lang === 'mk' ? 'Твоја кошничка' : 'Your Bag'}
+            {t(lang, 'Твоја кошничка', 'Your Bag')}
           </h2>
           <button
             type="button"
@@ -92,12 +91,8 @@ export function CartDrawer() {
           <div className="shipping-bar">
             <p className="shipping-bar-text">
               {remainingForFree === 0
-                ? lang === 'mk'
-                  ? 'Отклучена е бесплатна достава!'
-                  : 'You unlocked free delivery!'
-                : lang === 'mk'
-                  ? `Уште ${formatMkd(remainingForFree)} до бесплатна достава`
-                  : `Add ${formatMkd(remainingForFree)} more for free delivery`}
+                ? t(lang, 'Отклучена е бесплатна достава!', 'You unlocked free delivery!')
+                : t(lang, `Уште ${formatMkd(remainingForFree)} до бесплатна достава`, `Add ${formatMkd(remainingForFree)} more for free delivery`)}
             </p>
             <div className="shipping-track">
               <div className="shipping-fill" style={{ width: `${progressPct}%` }} />
@@ -109,15 +104,13 @@ export function CartDrawer() {
           {cart.length === 0 ? (
             <div className="empty-bag">
               <p className="empty-bag-title">
-                {lang === 'mk' ? 'Кошничката е празна' : 'Your bag is empty'}
+                {t(lang, 'Кошничката е празна', 'Your bag is empty')}
               </p>
               <p className="empty-bag-sub">
-                {lang === 'mk'
-                  ? 'Одбери ги твоите омилени патики или парчиња облека.'
-                  : 'Explore the latest sneakers and streetwear drops.'}
+                {t(lang, 'Одбери ги твоите омилени патики или парчиња облека.', 'Explore the latest sneakers and streetwear drops.')}
               </p>
               <Link to="/shop" className="btn btn-lime" onClick={() => setCartOpen(false)}>
-                {lang === 'mk' ? 'Отвори продавница' : 'Shop the drop'}
+                {t(lang, 'Отвори продавница', 'Shop the drop')}
               </Link>
             </div>
           ) : (
@@ -138,7 +131,7 @@ export function CartDrawer() {
                       </button>
                     </div>
                     <span className="cart-item-meta">
-                      {lang === 'mk' ? 'Број' : 'Size'}: {item.size}
+                      {t(lang, 'Број', 'Size')}: {item.size}
                     </span>
                     <div className="cart-item-bottom">
                       <div className="qty-stepper">
@@ -176,23 +169,23 @@ export function CartDrawer() {
                 type="text"
                 value={promoInput}
                 onChange={(e) => setPromoInput(e.target.value)}
-                placeholder={lang === 'mk' ? 'Промо код (пр. VYRO10)' : 'Promo code (e.g. VYRO10)'}
+                placeholder={t(lang, 'Промо код (пр. VYRO10)', 'Promo code (e.g. VYRO10)')}
                 aria-label="Promo code"
               />
               <button type="submit" className="btn btn-outline-light promo-apply-btn">
-                {lang === 'mk' ? 'Примени' : 'Apply'}
+                {t(lang, 'Примени', 'Apply')}
               </button>
             </form>
             {promoError && <p className="promo-error">{promoError}</p>}
 
             <div className="summary-row">
-              <span>{lang === 'mk' ? 'Вкупно производи' : 'Subtotal'}</span>
+              <span>{t(lang, 'Вкупно производи', 'Subtotal')}</span>
               <span>{formatMkd(subtotalMkd)}</span>
             </div>
             {appliedCode && discountMkd > 0 && (
               <div className="summary-row summary-discount">
                 <span>
-                  {lang === 'mk' ? 'Попуст' : 'Discount'} ({appliedCode}){' '}
+                  {t(lang, 'Попуст', 'Discount')} ({appliedCode}){' '}
                   <button type="button" className="remove-code-btn" onClick={removePromoCode} aria-label="Remove promo code">
                     <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18" stroke="currentColor" strokeWidth="2" strokeLinecap="round" /></svg>
                   </button>
@@ -201,13 +194,13 @@ export function CartDrawer() {
               </div>
             )}
             <div className="summary-row">
-              <span>{lang === 'mk' ? 'Достава' : 'Delivery'}</span>
+              <span>{t(lang, 'Достава', 'Delivery')}</span>
               <span>
-                {shippingMkd === 0 ? (lang === 'mk' ? 'Бесплатна' : 'Free') : formatMkd(shippingMkd)}
+                {shippingMkd === 0 ? (t(lang, 'Бесплатна', 'Free')) : formatMkd(shippingMkd)}
               </span>
             </div>
             <div className="summary-row summary-total">
-              <span>{lang === 'mk' ? 'Вкупно за плаќање' : 'Total'}</span>
+              <span>{t(lang, 'Вкупно за плаќање', 'Total')}</span>
               <span>{formatMkd(totalMkd)}</span>
             </div>
 
@@ -219,7 +212,7 @@ export function CartDrawer() {
                 setCheckoutOpen(true)
               }}
             >
-              {lang === 'mk' ? 'Нарачај (Плаќање при достава)' : 'Checkout — Cash on Delivery'}
+              {t(lang, 'Нарачај (Плаќање при достава)', 'Checkout — Cash on Delivery')}
             </button>
 
             <button
@@ -227,7 +220,7 @@ export function CartDrawer() {
               className="btn btn-outline-light full-width"
               onClick={handleCopyDmOrder}
             >
-              {lang === 'mk' ? 'Копирај за нарачка во порака (@vyro.mk)' : 'Copy Order for Instagram DM'}
+              {t(lang, 'Копирај за нарачка во порака (@vyro.mk)', 'Copy Order for Instagram DM')}
             </button>
           </div>
         )}

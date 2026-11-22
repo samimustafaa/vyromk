@@ -1,6 +1,7 @@
 import { useState, type FormEvent } from 'react'
 import { useStore } from '../context/StoreContext'
 import { Link } from 'react-router-dom'
+import { t } from '../i18n'
 
 export function Footer() {
   const { lang, showToast, addSubscriber } = useStore()
@@ -11,7 +12,7 @@ export function Footer() {
     if (!email.trim()) return
     const added = addSubscriber(email)
     if (!added) {
-      showToast(lang === 'mk' ? 'Веќе сте пријавени.' : 'You are already on the list.')
+      showToast(t(lang, 'Веќе сте пријавени.', 'You are already on the list.'))
     }
     setEmail('')
   }
@@ -25,7 +26,7 @@ export function Footer() {
             <span className="brand-mk">MK</span>
           </div>
           <p className="footer-slogan">
-            {lang === 'mk' ? 'Твој стил. Твој потег.' : 'Your Style. Your Move.'}
+            {t(lang, 'Твој стил. Твој потег.', 'Your Style. Your Move.')}
           </p>
           <p className="footer-bio">
             Патики и облека по достапни цени.
@@ -35,27 +36,25 @@ export function Footer() {
         </div>
 
         <div className="footer-col">
-          <h3 className="footer-heading">{lang === 'mk' ? 'Продавница' : 'Shop'}</h3>
-          <Link to="/shop">{lang === 'mk' ? 'Сите производи' : 'All Products'}</Link>
-          <Link to="/shop?category=sneakers">{lang === 'mk' ? 'Патики' : 'Sneakers'}</Link>
-          <Link to="/shop?category=apparel">{lang === 'mk' ? 'Облека' : 'Apparel'}</Link>
-          <Link to="/shop?category=accessories">{lang === 'mk' ? 'Додатоци' : 'Accessories'}</Link>
+          <h3 className="footer-heading">{t(lang, 'Продавница', 'Shop')}</h3>
+          <Link to="/shop">{t(lang, 'Сите производи', 'All Products')}</Link>
+          <Link to="/shop?category=sneakers">{t(lang, 'Патики', 'Sneakers')}</Link>
+          <Link to="/shop?category=apparel">{t(lang, 'Облека', 'Apparel')}</Link>
+          <Link to="/shop?category=accessories">{t(lang, 'Додатоци', 'Accessories')}</Link>
         </div>
 
         <div className="footer-col">
-          <h3 className="footer-heading">{lang === 'mk' ? 'Бренд' : 'Brand'}</h3>
-          <Link to="/about">{lang === 'mk' ? 'За VYRO MK' : 'About VYRO MK'}</Link>
-          <Link to="/track-order">{lang === 'mk' ? 'Следи нарачка' : 'Track my order'}</Link>
-          <a href="#dm-order">{lang === 'mk' ? 'Нарачки во порака' : 'DM Ordering'}</a>
+          <h3 className="footer-heading">{t(lang, 'Бренд', 'Brand')}</h3>
+          <Link to="/about">{t(lang, 'За VYRO MK', 'About VYRO MK')}</Link>
+          <Link to="/track-order">{t(lang, 'Следи нарачка', 'Track my order')}</Link>
+          <a href="#dm-order">{t(lang, 'Нарачки во порака', 'DM Ordering')}</a>
           <span>Instagram: @vyro.mk</span>
         </div>
 
         <div className="footer-col">
-          <h3 className="footer-heading">{lang === 'mk' ? 'Биди прв за нови дропови' : 'Drop Alerts'}</h3>
+          <h3 className="footer-heading">{t(lang, 'Биди прв за нови дропови', 'Drop Alerts')}</h3>
           <p className="footer-sub">
-            {lang === 'mk'
-              ? 'Добиј известување кога пристигнуваат нови модели и попуст.'
-              : 'Get early access when limited sneakers and restocks land.'}
+            {t(lang, 'Добиј известување кога пристигнуваат нови модели и попуст.', 'Get early access when limited sneakers and restocks land.')}
           </p>
           <form className="drop-form" onSubmit={handleSubscribe}>
             <input
@@ -63,11 +62,11 @@ export function Footer() {
               required
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              placeholder={lang === 'mk' ? 'Твојата е-пошта' : 'Your email'}
+              placeholder={t(lang, 'Твојата е-пошта', 'Your email')}
               aria-label="Email for drop alerts"
             />
             <button type="submit" className="btn btn-lime">
-              {lang === 'mk' ? 'Пријави се' : 'Join'}
+              {t(lang, 'Пријави се', 'Join')}
             </button>
           </form>
         </div>

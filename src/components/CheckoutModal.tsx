@@ -1,6 +1,7 @@
 import { useState, type FormEvent } from 'react'
 import { useStore } from '../context/StoreContext'
 import { formatMkd } from '../data/products'
+import { t } from '../i18n'
 
 export function CheckoutModal() {
   const {
@@ -46,7 +47,7 @@ export function CheckoutModal() {
     })
     setOrderRef(ref)
     clearCart()
-    showToast(lang === 'mk' ? `Нарачката ${ref} е примена!` : `Order ${ref} confirmed!`)
+    showToast(t(lang, `Нарачката ${ref} е примена!`, `Order ${ref} confirmed!`))
   }
 
   const handleClose = () => {
@@ -60,18 +61,14 @@ export function CheckoutModal() {
         className="checkout-modal"
         role="dialog"
         aria-modal="true"
-        aria-label={lang === 'mk' ? 'Брза нарачка' : 'Fast Checkout'}
+        aria-label={t(lang, 'Брза нарачка', 'Fast Checkout')}
         onClick={(e) => e.stopPropagation()}
       >
         <div className="drawer-header">
           <h2 className="display-title drawer-title">
             {orderRef
-              ? lang === 'mk'
-                ? 'Нарачката е потврдена'
-                : 'Order Confirmed'
-              : lang === 'mk'
-                ? 'Брза нарачка'
-                : 'Fast Checkout'}
+              ? t(lang, 'Нарачката е потврдена', 'Order Confirmed')
+              : t(lang, 'Брза нарачка', 'Fast Checkout')}
           </h2>
           <button type="button" className="drawer-close" onClick={handleClose} aria-label="Close">
             <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18" stroke="currentColor" strokeWidth="2" strokeLinecap="round" /></svg>
@@ -82,40 +79,34 @@ export function CheckoutModal() {
           <div className="order-success">
             <div className="order-ref-badge">{orderRef}</div>
             <p className="order-success-lead">
-              {lang === 'mk'
-                ? `Ти благодариме, ${name}! Твојата нарачка ќе биде испратена во рок од 24–48 часа во ${city}. Плаќаш директно на курирот при достава.`
-                : `Thank you, ${name}! Your order will ship within 24–48h to ${city}. Pay directly to the courier on delivery.`}
+              {t(lang, `Ти благодариме, ${name}! Твојата нарачка ќе биде испратена во рок од 24–48 часа во ${city}. Плаќаш директно на курирот при достава.`, `Thank you, ${name}! Your order will ship within 24–48h to ${city}. Pay directly to the courier on delivery.`)}
             </p>
             <p className="order-success-sub">
-              {lang === 'mk'
-                ? 'За промена на број или прашања, пиши ни на @vyro.mk.'
-                : 'Need a size swap or update? Message us anytime at @vyro.mk.'}
+              {t(lang, 'За промена на број или прашања, пиши ни на @vyro.mk.', 'Need a size swap or update? Message us anytime at @vyro.mk.')}
             </p>
             <button type="button" className="btn btn-lime full-width" onClick={handleClose}>
-              {lang === 'mk' ? 'Продолжи со разгледување' : 'Back to store'}
+              {t(lang, 'Продолжи со разгледување', 'Back to store')}
             </button>
           </div>
         ) : (
           <form className="checkout-form" onSubmit={handleSubmit}>
             <p className="checkout-note">
-              {lang === 'mk'
-                ? `Плаќање при достава • Вкупно: ${formatMkd(totalMkd)} (${cart.reduce((s, i) => s + i.quantity, 0)} производи)`
-                : `Cash on delivery • Total: ${formatMkd(totalMkd)} (${cart.reduce((s, i) => s + i.quantity, 0)} items)`}
+              {t(lang, `Плаќање при достава • Вкупно: ${formatMkd(totalMkd)} (${cart.reduce((s, i) => s + i.quantity, 0)} производи)`, `Cash on delivery • Total: ${formatMkd(totalMkd)} (${cart.reduce((s, i) => s + i.quantity, 0)} items)`)}
             </p>
 
             <label className="field">
-              <span>{lang === 'mk' ? 'Име и презиме' : 'Full name'}</span>
+              <span>{t(lang, 'Име и презиме', 'Full name')}</span>
               <input
                 type="text"
                 required
                 value={name}
                 onChange={(e) => setName(e.target.value)}
-                placeholder={lang === 'mk' ? 'Марко Петровски' : 'Marko Petrovski'}
+                placeholder={t(lang, 'Марко Петровски', 'Marko Petrovski')}
               />
             </label>
 
             <label className="field">
-              <span>{lang === 'mk' ? 'Телефонски број' : 'Phone number'}</span>
+              <span>{t(lang, 'Телефонски број', 'Phone number')}</span>
               <input
                 type="tel"
                 required
@@ -127,7 +118,7 @@ export function CheckoutModal() {
 
             <div className="field-row">
               <label className="field">
-                <span>{lang === 'mk' ? 'Град' : 'City'}</span>
+                <span>{t(lang, 'Град', 'City')}</span>
                 <select value={city} onChange={(e) => setCity(e.target.value)}>
                   <option value="Skopje">Skopje / Скопје</option>
                   <option value="Bitola">Bitola / Битола</option>
@@ -142,19 +133,19 @@ export function CheckoutModal() {
               </label>
 
               <label className="field">
-                <span>{lang === 'mk' ? 'Адреса' : 'Street address'}</span>
+                <span>{t(lang, 'Адреса', 'Street address')}</span>
                 <input
                   type="text"
                   required
                   value={address}
                   onChange={(e) => setAddress(e.target.value)}
-                  placeholder={lang === 'mk' ? 'Ул. Партизанска бр. 14' : 'Partizanska 14'}
+                  placeholder={t(lang, 'Ул. Партизанска бр. 14', 'Partizanska 14')}
                 />
               </label>
             </div>
 
             <button type="submit" className="btn btn-lime full-width">
-              {lang === 'mk' ? 'Потврди нарачка' : 'Confirm Order'}
+              {t(lang, 'Потврди нарачка', 'Confirm Order')}
             </button>
           </form>
         )}

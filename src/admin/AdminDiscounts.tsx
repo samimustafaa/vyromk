@@ -1,5 +1,6 @@
 import { useState, type FormEvent } from 'react'
 import { useStore } from '../context/StoreContext'
+import { Dropdown } from './Dropdown'
 import { formatMkd } from '../data/products'
 
 export function AdminDiscounts() {
@@ -130,13 +131,18 @@ export function AdminDiscounts() {
               required
             />
           </label>
-          <label className="adm-field">
+          <div className="adm-field">
             <span>Type</span>
-            <select value={type} onChange={(e) => setType(e.target.value as 'percent' | 'fixed')}>
-              <option value="percent">Percentage off</option>
-              <option value="fixed">Fixed amount (MKD)</option>
-            </select>
-          </label>
+            <Dropdown
+              value={type}
+              onChange={(v) => setType(v as 'percent' | 'fixed')}
+              label="Discount type"
+              options={[
+                { value: 'percent', label: 'Percentage off', hint: 'e.g. 10 → 10% off' },
+                { value: 'fixed', label: 'Fixed amount (MKD)', hint: 'e.g. 500 → 500 MKD off' },
+              ]}
+            />
+          </div>
           <label className="adm-field">
             <span>{type === 'percent' ? 'Percent' : 'Amount (MKD)'}</span>
             <input type="number" min="1" value={value} onChange={(e) => setValue(e.target.value)} required />

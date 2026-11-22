@@ -5,6 +5,9 @@ import { StarRating } from '../components/StarRating'
 import { HeartIcon, BagIcon } from '../components/Icons'
 import { useStore } from '../context/StoreContext'
 import { categoryLabel, formatMkd, GENDER_LABELS } from '../data/products'
+import { t } from '../i18n'
+import { productMeta } from '../seo/meta'
+import { usePageMeta } from '../seo/usePageMeta'
 
 export function ProductDetailPage() {
   const { slug } = useParams()
@@ -28,6 +31,7 @@ export function ProductDetailPage() {
   } = useStore()
 
   const product = products.find((p) => p.slug === slug) ?? products[0]
+  usePageMeta(product ? productMeta(product, lang) : null)
   const [selectedSize, setSelectedSize] = useState('')
   const [sizeGuideOpen, setSizeGuideOpen] = useState(false)
   const [reviewName, setReviewName] = useState('')
@@ -81,9 +85,7 @@ export function ProductDetailPage() {
     const msg = `Hi @vyro.mk! I want to order: ${product.name} (Size ${selectedSize}) — ${formatMkd(product.priceMkd)}`
     if (navigator.clipboard?.writeText) navigator.clipboard.writeText(msg).catch(() => {})
     showToast(
-      lang === 'mk'
-        ? 'Пораката е копирана! Испрати ја на @vyro.mk'
-        : 'Message copied! Send it to @vyro.mk on Instagram.',
+      t(lang, 'Пораката е копирана! Испрати ја на @vyro.mk', 'Message copied! Send it to @vyro.mk on Instagram.'),
     )
   }
 
@@ -107,7 +109,7 @@ export function ProductDetailPage() {
       <section className="section-light pdp-section">
         <div className="container">
           <nav className="breadcrumb" aria-label="Breadcrumb">
-            <Link to="/">{lang === 'mk' ? 'Почетна' : 'Home'}</Link>
+            <Link to="/">{t(lang, 'Почетна', 'Home')}</Link>
             <span>/</span>
             <Link to={`/shop?category=${product.category}`}>
               {categoryLabel(categories, product.category, lang)}
@@ -136,7 +138,7 @@ export function ProductDetailPage() {
                   to={product.gender === 'unisex' ? '/shop' : `/shop?gender=${product.gender}`}
                   className={`gender-tag gender-tag--${product.gender}`}
                 >
-                  {GENDER_LABELS[product.gender]?.[lang] ?? 'Unisex'}
+                  {t(lang, GENDER_LABELS[product.gender].mk, GENDER_LABELS[product.gender].en, GENDER_LABELS[product.gender].sq)}
                 </Link>
               </div>
               <h1 className="display-title pdp-title">{product.name}</h1>
@@ -148,7 +150,7 @@ export function ProductDetailPage() {
                   className="pdp-review-jump"
                   onClick={() => document.getElementById('pdp-reviews')?.scrollIntoView({ behavior: 'smooth' })}
                 >
-                  {lang === 'mk' ? 'Види оцени' : 'Read reviews'}
+                  {t(lang, 'Види оцени', 'Read reviews')}
                 </button>
               </div>
 
@@ -159,13 +161,13 @@ export function ProductDetailPage() {
                 )}
               </div>
 
-              <p className="pdp-desc">{product.description[lang]}</p>
+              <p className="pdp-desc">{product.description[lang] ?? product.description.en}</p>
 
               <div className="pdp-size-block">
                 <div className="pdp-size-header">
-                  <span>{lang === 'mk' ? 'Одбери број' : 'Select Size'}</span>
+                  <span>{t(lang, 'Одбери број', 'Select Size')}</span>
                   <button type="button" className="size-guide-link" onClick={() => setSizeGuideOpen(true)}>
-                    {lang === 'mk' ? 'Табела за броеви' : 'Size Guide'}
+                    {t(lang, 'Табела за броеви', 'Size Guide')}
                   </button>
                 </div>
                 <div className="pdp-sizes" role="group" aria-label="Select size">
@@ -187,12 +189,12 @@ export function ProductDetailPage() {
                 </div>
                 <p className={`pdp-stock-line${selectedStock > 0 ? ' ok' : ' out'}`}>
                   {totalStock === 0
-                    ? lang === 'mk' ? 'Целосно распродадено' : 'Fully sold out'
+                    ? t(lang, 'Целосно распродадено', 'Fully sold out')
                     : selectedStock === 0
-                      ? lang === 'mk' ? 'Овој број е распродаден — избери друг' : 'This size is sold out — pick another'
+                      ? t(lang, 'Овој број е распродаден — избери друг', 'This size is sold out — pick another')
                       : selectedStock <= 3
-                        ? lang === 'mk' ? `Само ${selectedStock} останати — побрзај` : `Only ${selectedStock} left — order soon`
-                        : lang === 'mk' ? 'На залиха • Испорака за 24ч' : 'In stock • Ships within 24h'}
+                        ? t(lang, `Само ${selectedStock} останати — побрзај`, `Only ${selectedStock} left — order soon`)
+                        : t(lang, 'На залиха • Испорака за 24ч', 'In stock • Ships within 24h')}
                 </p>
               </div>
 
@@ -204,10 +206,8 @@ export function ProductDetailPage() {
                   disabled={selectedStock === 0}
                 >
                   {selectedStock === 0
-                    ? lang === 'mk' ? 'Распродадено' : 'Sold out'
-                    : lang === 'mk'
-                      ? `Додај во кошничка — ${formatMkd(product.priceMkd)}`
-                      : `Add to Bag — ${formatMkd(product.priceMkd)}`}
+                    ? t(lang, 'Распродадено', 'Sold out')
+                    : t(lang, `Додај во кошничка — ${formatMkd(product.priceMkd)}`, `Add to Bag — ${formatMkd(product.priceMkd)}`)}
                 </button>
                 <div className="pdp-secondary-actions">
                   <button
@@ -217,23 +217,23 @@ export function ProductDetailPage() {
                   >
                     <HeartIcon filled={isSaved} />
                     {isSaved
-                      ? lang === 'mk' ? 'Зачувано' : 'Saved'
-                      : lang === 'mk' ? 'Зачувај' : 'Save'}
+                      ? t(lang, 'Зачувано', 'Saved')
+                      : t(lang, 'Зачувај', 'Save')}
                   </button>
                   <button type="button" className="btn btn-outline-dark" onClick={handleCopySingleDm}>
-                    {lang === 'mk' ? 'Копирај за DM' : 'Copy for DM'}
+                    {t(lang, 'Копирај за DM', 'Copy for DM')}
                   </button>
                 </div>
               </div>
 
               <div className="pdp-perks">
-                <span>{lang === 'mk' ? `Бесплатна достава над ${formatMkd(settings.freeShippingMkd)}` : `Free delivery over ${formatMkd(settings.freeShippingMkd)}`}</span>
-                <span>{lang === 'mk' ? 'Плаќање при достава' : 'Cash on delivery'}</span>
-                <span>{lang === 'mk' ? '7 дена замена' : '7-day size swap'}</span>
+                <span>{t(lang, `Бесплатна достава над ${formatMkd(settings.freeShippingMkd)}`, `Free delivery over ${formatMkd(settings.freeShippingMkd)}`)}</span>
+                <span>{t(lang, 'Плаќање при достава', 'Cash on delivery')}</span>
+                <span>{t(lang, '7 дена замена', '7-day size swap')}</span>
               </div>
 
               <ul className="pdp-details">
-                {product.details[lang].map((line) => (
+                {(product.details[lang] ?? product.details.en).map((line: string) => (
                   <li key={line}>{line}</li>
                 ))}
               </ul>
@@ -247,14 +247,14 @@ export function ProductDetailPage() {
         <div className="container reviews-grid">
           <div className="reviews-summary">
             <h2 className="display-title section-title-dark">
-              {lang === 'mk' ? 'Оцени од купувачи' : 'Customer Reviews'}
+              {t(lang, 'Оцени од купувачи', 'Customer Reviews')}
             </h2>
             <div className="reviews-score">
               <strong>{summary.count > 0 ? summary.average.toFixed(1) : '—'}</strong>
               <div>
                 <StarRating value={summary.average} size="md" showValue={false} />
                 <span>
-                  {summary.count} {lang === 'mk' ? 'оцени' : 'reviews'}
+                  {summary.count} {t(lang, 'оцени', 'reviews')}
                 </span>
               </div>
             </div>
@@ -263,13 +263,13 @@ export function ProductDetailPage() {
               className="btn btn-dark"
               onClick={() => setShowReviewForm((v) => !v)}
             >
-              {lang === 'mk' ? 'Напиши оценка' : 'Write a review'}
+              {t(lang, 'Напиши оценка', 'Write a review')}
             </button>
 
             {showReviewForm && (
               <form className="review-form" onSubmit={handleReviewSubmit}>
                 <label className="field">
-                  <span>{lang === 'mk' ? 'Твоето ime' : 'Your name'}</span>
+                  <span>{t(lang, 'Твоето ime', 'Your name')}</span>
                   <input
                     type="text"
                     required
@@ -294,17 +294,17 @@ export function ProductDetailPage() {
                   ))}
                 </div>
                 <label className="field">
-                  <span>{lang === 'mk' ? 'Коментар' : 'Your review'}</span>
+                  <span>{t(lang, 'Коментар', 'Your review')}</span>
                   <textarea
                     required
                     rows={3}
                     value={reviewText}
                     onChange={(e) => setReviewText(e.target.value)}
-                    placeholder={lang === 'mk' ? 'Како ти се допаѓаат?' : 'How do they fit and feel?'}
+                    placeholder={t(lang, 'Како ти се допаѓаат?', 'How do they fit and feel?')}
                   />
                 </label>
                 <button type="submit" className="btn btn-lime">
-                  {lang === 'mk' ? 'Испрати оценка' : 'Submit review'}
+                  {t(lang, 'Испрати оценка', 'Submit review')}
                 </button>
               </form>
             )}
@@ -313,7 +313,7 @@ export function ProductDetailPage() {
           <div className="reviews-list">
             {productReviews.length === 0 ? (
               <p className="reviews-empty">
-                {lang === 'mk' ? 'Сè уште нема оцени за овој модел. Биди прв!' : 'No reviews for this piece yet. Be the first.'}
+                {t(lang, 'Сè уште нема оцени за овој модел. Биди прв!', 'No reviews for this piece yet. Be the first.')}
               </p>
             ) : (
               productReviews.map((r) => (
@@ -336,7 +336,7 @@ export function ProductDetailPage() {
         <section className="section-light related-section">
           <div className="container">
             <h2 className="display-title section-title-dark related-heading">
-              {lang === 'mk' ? 'Комплетирај го аутфитот' : 'Complete the Look'}
+              {t(lang, 'Комплетирај го аутфитот', 'Complete the Look')}
             </h2>
             <div className="product-grid product-grid--three">
               {completeLook.map((item) => (
@@ -351,7 +351,7 @@ export function ProductDetailPage() {
         <section className="section-light related-section">
           <div className="container">
             <h2 className="display-title section-title-dark related-heading">
-              {lang === 'mk' ? 'Слични модели' : 'You May Also Like'}
+              {t(lang, 'Слични модели', 'You May Also Like')}
             </h2>
             <div className="product-grid">
               {related.map((item) => (
@@ -366,7 +366,7 @@ export function ProductDetailPage() {
         <section className="section-light related-section">
           <div className="container">
             <h2 className="display-title section-title-dark related-heading">
-              {lang === 'mk' ? 'Неодамна разгледани' : 'Recently Viewed'}
+              {t(lang, 'Неодамна разгледани', 'Recently Viewed')}
             </h2>
             <div className="recent-row">
               {recentProducts.map((item) => (
@@ -388,7 +388,7 @@ export function ProductDetailPage() {
         <div>
           <strong>{formatMkd(product.priceMkd)}</strong>
           <span>
-            {lang === 'mk' ? 'Број' : 'Size'} {selectedSize}
+            {t(lang, 'Број', 'Size')} {selectedSize}
           </span>
         </div>
         <button
@@ -398,8 +398,8 @@ export function ProductDetailPage() {
           disabled={selectedStock === 0}
         >
           {selectedStock === 0
-            ? lang === 'mk' ? 'Распродадено' : 'Sold out'
-            : lang === 'mk' ? 'Додај во кошничка' : 'Add to bag'}
+            ? t(lang, 'Распродадено', 'Sold out')
+            : t(lang, 'Додај во кошничка', 'Add to bag')}
         </button>
         <button type="button" className="pdp-sticky-bag" onClick={() => setCartOpen(true)}>
           <BagIcon /> {cartCount}
@@ -411,7 +411,7 @@ export function ProductDetailPage() {
           <div className="checkout-modal" role="dialog" aria-modal="true" onClick={(e) => e.stopPropagation()}>
             <div className="drawer-header">
               <h2 className="display-title drawer-title">
-                {lang === 'mk' ? 'Табела за броеви' : 'VYRO MK Size Guide'}
+                {t(lang, 'Табела за броеви', 'VYRO MK Size Guide')}
               </h2>
               <button type="button" className="drawer-close" onClick={() => setSizeGuideOpen(false)}>
                 <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18" stroke="currentColor" strokeWidth="2" strokeLinecap="round" /></svg>
@@ -423,7 +423,7 @@ export function ProductDetailPage() {
                   <tr>
                     <th>EU</th>
                     <th>US</th>
-                    <th>{lang === 'mk' ? 'Стапка (cm)' : 'Foot (cm)'}</th>
+                    <th>{t(lang, 'Стапка (cm)', 'Foot (cm)')}</th>
                   </tr>
                 </thead>
                 <tbody>

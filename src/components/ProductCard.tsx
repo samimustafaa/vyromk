@@ -4,6 +4,7 @@ import { useStore } from '../context/StoreContext'
 import { formatMkd, GENDER_LABELS, type Product } from '../data/products'
 import { StarRating } from './StarRating'
 import { HeartIcon } from './Icons'
+import { t } from '../i18n'
 
 interface ProductCardProps {
   product: Product
@@ -47,7 +48,7 @@ export function ProductCard({ product, theme = 'light' }: ProductCardProps) {
         </button>
         {totalStock > 0 && totalStock <= 6 && (
           <span className="low-stock-flag">
-            {lang === 'mk' ? `Само ${totalStock} останати` : `Only ${totalStock} left`}
+            {t(lang, `Само ${totalStock} останати`, `Only ${totalStock} left`)}
           </span>
         )}
       </div>
@@ -59,7 +60,7 @@ export function ProductCard({ product, theme = 'light' }: ProductCardProps) {
           </Link>
           <span className="product-color">{product.colorway}</span>
           <span className={`gender-tag gender-tag--${product.gender}`}>
-            {GENDER_LABELS[product.gender]?.[lang] ?? 'Unisex'}
+            {t(lang, GENDER_LABELS[product.gender].mk, GENDER_LABELS[product.gender].en, GENDER_LABELS[product.gender].sq)}
           </span>
           <StarRating value={summary.average} count={summary.count} />
         </div>
@@ -96,10 +97,10 @@ export function ProductCard({ product, theme = 'light' }: ProductCardProps) {
             disabled={soldOut || selectedStock === 0}
           >
             {soldOut
-              ? lang === 'mk' ? 'Распродадено' : 'Sold out'
+              ? t(lang, 'Распродадено', 'Sold out')
               : selectedStock === 0
-                ? lang === 'mk' ? 'Бројот е распродаден' : 'Size sold out'
-                : lang === 'mk' ? 'Додај' : 'Add to bag'}
+                ? t(lang, 'Бројот е распродаден', 'Size sold out')
+                : t(lang, 'Додај', 'Add to bag')}
           </button>
         </div>
       </div>

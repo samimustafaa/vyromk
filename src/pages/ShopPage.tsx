@@ -2,7 +2,10 @@ import { useEffect, useMemo, useState } from 'react'
 import { useSearchParams } from 'react-router-dom'
 import { ProductCard } from '../components/ProductCard'
 import { useStore } from '../context/StoreContext'
-import { formatMkd, matchesGender, type Gender } from '../data/products'
+import { categoryLabel, GENDER_LABELS, formatMkd, matchesGender, type Gender } from '../data/products'
+import { t } from '../i18n'
+import { shopMeta } from '../seo/meta'
+import { usePageMeta } from '../seo/usePageMeta'
 
 type SortKey = 'featured' | 'price-asc' | 'price-desc' | 'rating' | 'newest'
 
@@ -88,12 +91,21 @@ export function ShopPage() {
 
   const cheapest = products.length > 0 ? Math.min(...products.map((p) => p.priceMkd)) : 0
 
+  const activeCategory = categories.find((c) => c.slug === category) ?? null
+  usePageMeta(
+    shopMeta(lang, filtered, {
+      gender: gender === 'men' || gender === 'women' ? gender : undefined,
+      category: activeCategory,
+      query: query || undefined,
+    }),
+  )
+
   const heading =
     gender === 'men'
-      ? lang === 'mk' ? 'Мажи' : 'Men'
+      ? t(lang, 'Мажи', 'Men')
       : gender === 'women'
-        ? lang === 'mk' ? 'Жени' : 'Women'
-        : lang === 'mk' ? 'Продавница' : 'Shop VYRO MK'
+        ? t(lang, 'Жени', 'Women')
+        : t(lang, 'Продавница', 'Shop VYRO MK')
 
   return (
     <div className="shop-page">
@@ -102,12 +114,8 @@ export function ShopPage() {
           <h1 className="display-title shop-title">{heading}</h1>
           <p className="shop-sub">
             {gender !== 'all'
-              ? lang === 'mk'
-                ? 'Сите модели за тебе, вклучително и унисекс парчиња.'
-                : 'Every piece for you, including unisex styles.'
-              : lang === 'mk'
-                ? `Сите достапни модели • Цени од ${formatMkd(cheapest)} • Бесплатна достава над 3,500 MKD`
-                : `Every available piece • Prices from ${formatMkd(cheapest)} • Free delivery over 3,500 MKD`}
+              ? t(lang, 'Сите модели за тебе, вклучително и унисекс парчиња.', 'Every piece for you, including unisex styles.')
+              : t(lang, `Сите достапни модели • Цени од ${formatMkd(cheapest)} • Бесплатна достава над 3,500 MKD`, `Every available piece • Prices from ${formatMkd(cheapest)} • Free delivery over 3,500 MKD`)}
           </p>
 
           <div className="gender-switch" role="tablist" aria-label="Shop by gender">
@@ -120,7 +128,7 @@ export function ShopPage() {
                 className={`gender-tab${gender === g.key ? ' active' : ''}`}
                 onClick={() => handleGender(g.key)}
               >
-                {lang === 'mk' ? g.mk : g.en}
+                {t(lang, g.mk, g.en, g.key === 'all' ? 'Të gjitha' : GENDER_LABELS[g.key].sq)}
               </button>
             ))}
           </div>
@@ -134,7 +142,7 @@ export function ShopPage() {
                 className={`filter-tab${category === 'all' ? ' active' : ''}`}
                 onClick={() => handleCategory('all')}
               >
-                {lang === 'mk' ? 'Сите' : 'All'}
+                {t(lang, 'Сите', 'All')}
               </button>
               {categories.map((c) => (
                 <button
@@ -145,7 +153,7 @@ export function ShopPage() {
                   className={`filter-tab${category === c.slug ? ' active' : ''}`}
                   onClick={() => handleCategory(c.slug)}
                 >
-                  {lang === 'mk' ? c.labelMk : c.labelEn}
+                  {categoryLabel(categories, c.slug, lang)}
                 </button>
               ))}
               <button
@@ -155,7 +163,7 @@ export function ShopPage() {
                 className={`filter-tab${savedOnly ? ' active' : ''}`}
                 onClick={() => setSavedOnly((v) => !v)}
               >
-                {lang === 'mk' ? 'Омилени' : 'Saved'} ({wishlist.length})
+                {t(lang, 'Омилени', 'Saved')} ({wishlist.length})
               </button>
             </div>
 
@@ -164,7 +172,7 @@ export function ShopPage() {
                 type="search"
                 value={query}
                 onChange={(e) => setQuery(e.target.value)}
-                placeholder={lang === 'mk' ? 'Пребарај модел...' : 'Search models...'}
+                placeholder={t(lang, 'Пребарај модел...', 'Search models...')}
                 aria-label="Search products"
                 className="shop-search"
               />
@@ -174,11 +182,11 @@ export function ShopPage() {
                 aria-label="Sort products"
                 className="shop-sort"
               >
-                <option value="featured">{lang === 'mk' ? 'Препорачани' : 'Featured'}</option>
-                <option value="newest">{lang === 'mk' ? 'Најнови' : 'Newest drops'}</option>
-                <option value="rating">{lang === 'mk' ? 'Најдобро оценети' : 'Top rated'}</option>
-                <option value="price-asc">{lang === 'mk' ? 'Цена: ниска → висока' : 'Price: Low to High'}</option>
-                <option value="price-desc">{lang === 'mk' ? 'Цена: висока → ниска' : 'Price: High to Low'}</option>
+                <option value="featured">{t(lang, 'Препорачани', 'Featured')}</option>
+                <option value="newest">{t(lang, 'Најнови', 'Newest drops')}</option>
+                <option value="rating">{t(lang, 'Најдобро оценети', 'Top rated')}</option>
+                <option value="price-asc">{t(lang, 'Цена: ниска → висока', 'Price: Low to High')}</option>
+                <option value="price-desc">{t(lang, 'Цена: висока → ниска', 'Price: High to Low')}</option>
               </select>
             </div>
           </div>
@@ -194,7 +202,7 @@ export function ShopPage() {
               className={`filter-chip${band === b.key ? ' active' : ''}`}
               onClick={() => setBand(b.key)}
             >
-              {b.key === 'all' ? (lang === 'mk' ? 'Сите цени' : 'Any price') : b.label}
+              {b.key === 'all' ? (t(lang, 'Сите цени', 'Any price')) : b.label}
             </button>
           ))}
         </div>
@@ -204,17 +212,17 @@ export function ShopPage() {
             className={`filter-chip${onSaleOnly ? ' active' : ''}`}
             onClick={() => setOnSaleOnly((v) => !v)}
           >
-            {lang === 'mk' ? 'Само на попуст' : 'On sale'}
+            {t(lang, 'Само на попуст', 'On sale')}
           </button>
           <button
             type="button"
             className={`filter-chip${inStockOnly ? ' active' : ''}`}
             onClick={() => setInStockOnly((v) => !v)}
           >
-            {lang === 'mk' ? 'На залиха' : 'In stock'}
+            {t(lang, 'На залиха', 'In stock')}
           </button>
           <span className="result-count">
-            {filtered.length} {lang === 'mk' ? 'производи' : 'products'}
+            {filtered.length} {t(lang, 'производи', 'products')}
           </span>
         </div>
       </div>
@@ -223,7 +231,7 @@ export function ShopPage() {
         <div className="container">
           {filtered.length === 0 ? (
             <div className="empty-search">
-              <p>{lang === 'mk' ? 'Нема пронајдени производи.' : 'No products match your filters.'}</p>
+              <p>{t(lang, 'Нема пронајдени производи.', 'No products match your filters.')}</p>
               <button
                 type="button"
                 className="btn btn-dark"
@@ -238,7 +246,7 @@ export function ShopPage() {
                   setSearchParams({})
                 }}
               >
-                {lang === 'mk' ? 'Ресетирај филтри' : 'Reset filters'}
+                {t(lang, 'Ресетирај филтри', 'Reset filters')}
               </button>
             </div>
           ) : (

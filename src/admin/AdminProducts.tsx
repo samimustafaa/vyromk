@@ -2,6 +2,7 @@ import { useMemo, useRef, useState, type FormEvent } from 'react'
 import { useStore } from '../context/StoreContext'
 import { categoryLabel, formatMkd, GENDER_LABELS, type Gender, type Product } from '../data/products'
 import { PRESET_IMAGES } from './adminData'
+import { Dropdown } from './Dropdown'
 
 type SortKey = 'newest' | 'name' | 'price-desc' | 'stock'
 type GenderFilter = 'all' | Gender
@@ -297,16 +298,15 @@ export function AdminProducts() {
               />
             </label>
 
-            <label className="adm-field">
+            <div className="adm-field">
               <span>Category</span>
-              <select value={category} onChange={(e) => setCategory(e.target.value)}>
-                {categories.map((c) => (
-                  <option key={c.slug} value={c.slug}>
-                    {c.labelEn}
-                  </option>
-                ))}
-              </select>
-            </label>
+              <Dropdown
+                value={category}
+                onChange={setCategory}
+                label="Category"
+                options={categories.map((c) => ({ value: c.slug, label: c.labelEn }))}
+              />
+            </div>
 
             <label className="adm-field">
               <span>Price (MKD)</span>
@@ -345,28 +345,30 @@ export function AdminProducts() {
               </p>
             </div>
 
-            <label className="adm-field">
+            <div className="adm-field">
               <span>Badge</span>
-              <select value={badge} onChange={(e) => setBadge(e.target.value as typeof badge)}>
-                {BADGES.map((b) => (
-                  <option key={b} value={b}>
-                    {b}
-                  </option>
-                ))}
-                <option value="">None</option>
-              </select>
-            </label>
+              <Dropdown
+                value={badge}
+                onChange={(v) => setBadge(v as typeof badge)}
+                label="Badge"
+                options={[
+                  { value: 'New Drop', label: 'New Drop', dot: 'var(--lime)' },
+                  { value: 'Best Seller', label: 'Best Seller', dot: '#8cb4ff' },
+                  { value: 'Limited', label: 'Limited', dot: '#ff9ecb' },
+                  { value: '', label: 'None', dot: '#5a5a5a' },
+                ]}
+              />
+            </div>
 
-            <label className="adm-field">
+            <div className="adm-field">
               <span>Photo</span>
-              <select value={image} onChange={(e) => setImage(e.target.value)}>
-                {PRESET_IMAGES.map((img) => (
-                  <option key={img.value} value={img.value}>
-                    {img.label}
-                  </option>
-                ))}
-              </select>
-            </label>
+              <Dropdown
+                value={image}
+                onChange={setImage}
+                label="Photo"
+                options={PRESET_IMAGES.map((img) => ({ value: img.value, label: img.label }))}
+              />
+            </div>
 
             <label className="adm-field">
               <span>Sizes (comma separated)</span>
@@ -438,41 +440,44 @@ export function AdminProducts() {
             aria-label="Search products"
           />
         </div>
-        <select
+        <Dropdown
           value={filterCat}
-          onChange={(e) => setFilterCat(e.target.value)}
-          aria-label="Filter by category"
-          className="adm-select"
-        >
-          <option value="all">All categories</option>
-          {categories.map((c) => (
-            <option key={c.slug} value={c.slug}>
-              {c.labelEn}
-            </option>
-          ))}
-        </select>
-        <select
+          onChange={setFilterCat}
+          label="Filter by category"
+          className="adm-toolbar-dd"
+          size="sm"
+          options={[
+            { value: 'all', label: 'All categories' },
+            ...categories.map((c) => ({ value: c.slug, label: c.labelEn })),
+          ]}
+        />
+        <Dropdown
           value={filterGender}
-          onChange={(e) => setFilterGender(e.target.value as GenderFilter)}
-          aria-label="Filter by audience"
-          className="adm-select"
-        >
-          <option value="all">All audiences</option>
-          <option value="men">Men only</option>
-          <option value="women">Women only</option>
-          <option value="unisex">Unisex</option>
-        </select>
-        <select
+          onChange={(v) => setFilterGender(v as GenderFilter)}
+          label="Filter by audience"
+          className="adm-toolbar-dd"
+          size="sm"
+          options={[
+            { value: 'all', label: 'All audiences', dot: '#9a9a9a' },
+            { value: 'men', label: 'Men only', dot: '#8cb4ff' },
+            { value: 'women', label: 'Women only', dot: '#ff9ecb' },
+            { value: 'unisex', label: 'Unisex', dot: 'var(--lime)' },
+          ]}
+        />
+        <Dropdown
           value={sort}
-          onChange={(e) => setSort(e.target.value as SortKey)}
-          aria-label="Sort"
-          className="adm-select"
-        >
-          <option value="newest">Newest first</option>
-          <option value="name">Name A–Z</option>
-          <option value="price-desc">Highest price</option>
-          <option value="stock">Lowest stock</option>
-        </select>
+          onChange={(v) => setSort(v as SortKey)}
+          label="Sort products"
+          className="adm-toolbar-dd"
+          size="sm"
+          align="right"
+          options={[
+            { value: 'newest', label: 'Newest first' },
+            { value: 'name', label: 'Name A–Z' },
+            { value: 'price-desc', label: 'Highest price' },
+            { value: 'stock', label: 'Lowest stock' },
+          ]}
+        />
         <span className="adm-count">{filtered.length} shown</span>
       </div>
 

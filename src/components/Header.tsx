@@ -2,29 +2,33 @@ import { useState } from 'react'
 import { Link, useLocation } from 'react-router-dom'
 import { useStore } from '../context/StoreContext'
 import { HeartIcon, BagIcon } from './Icons'
+import { categoryLabel } from '../data/products'
+import { LANGS } from '../i18n'
+import { t } from '../i18n'
 
 export function Header() {
   const { lang, setLang, cartCount, setCartOpen, settings, wishlist, categories } = useStore()
+  const { setWishOpen } = useStore()
   const [menuOpen, setMenuOpen] = useState(false)
   const location = useLocation()
 
   const navLinks = [
-    { to: '/', label: lang === 'mk' ? 'Почетна' : 'Home' },
-    { to: '/shop?gender=men', label: lang === 'mk' ? 'Мажи' : 'Men' },
-    { to: '/shop?gender=women', label: lang === 'mk' ? 'Жени' : 'Women' },
-    { to: '/shop', label: lang === 'mk' ? 'Сите' : 'Shop All' },
+    { to: '/', label: t(lang, 'Почетна', 'Home') },
+    { to: '/shop?gender=men', label: t(lang, 'Мажи', 'Men') },
+    { to: '/shop?gender=women', label: t(lang, 'Жени', 'Women') },
+    { to: '/shop', label: t(lang, 'Сите', 'Shop All') },
     ...categories.map((c) => ({
       to: `/shop?category=${c.slug}`,
-      label: lang === 'mk' ? c.labelMk : c.labelEn,
+      label: categoryLabel(categories, c.slug, lang),
     })),
-    { to: '/about', label: lang === 'mk' ? 'За нас' : 'About' },
+    { to: '/about', label: t(lang, 'За нас', 'About') },
   ]
 
   return (
     <header className="site-header">
       <div className="promo-bar">
         <div className="container promo-bar-inner">
-          <span>{lang === 'mk' ? settings.promoBannerMk : settings.promoBannerEn}</span>
+          <span>{t(lang, settings.promoBannerMk, settings.promoBannerEn, settings.promoBannerSq)}</span>
           <span className="promo-handle">
             {wishlist.length > 0 && (
               <span className="promo-heart">
@@ -59,30 +63,38 @@ export function Header() {
 
         <div className="header-actions">
           <div className="lang-switch" role="group" aria-label="Language">
-            <button
-              type="button"
-              className={`lang-btn${lang === 'en' ? ' active' : ''}`}
-              onClick={() => setLang('en')}
-            >
-              EN
-            </button>
-            <button
-              type="button"
-              className={`lang-btn${lang === 'mk' ? ' active' : ''}`}
-              onClick={() => setLang('mk')}
-            >
-              MK
-            </button>
+            {LANGS.map((l) => (
+              <button
+                key={l.code}
+                type="button"
+                className={`lang-btn${lang === l.code ? ' active' : ''}`}
+                onClick={() => setLang(l.code)}
+                title={l.label}
+                aria-pressed={lang === l.code}
+              >
+                {l.short}
+              </button>
+            ))}
           </div>
+
+          <button
+            type="button"
+            className="wish-trigger"
+            onClick={() => setWishOpen(true)}
+            aria-label={t(lang, 'Отвори омилени', 'Open wishlist', 'Hap listën e dëshirave')}
+          >
+            <HeartIcon filled={wishlist.length > 0} />
+            {wishlist.length > 0 && <span className="bag-count wish-count">{wishlist.length}</span>}
+          </button>
 
           <button
             type="button"
             className="bag-trigger"
             onClick={() => setCartOpen(true)}
-            aria-label={lang === 'mk' ? 'Отвори кошничка' : 'Open shopping bag'}
+            aria-label={t(lang, 'Отвори кошничка', 'Open shopping bag')}
           >
             <BagIcon />
-            <span>{lang === 'mk' ? 'Кошничка' : 'Bag'}</span>
+            <span>{t(lang, 'Кошничка', 'Bag')}</span>
             <span className="bag-count">{cartCount}</span>
           </button>
 

@@ -1,6 +1,7 @@
 import { useState, type FormEvent } from 'react'
 import { useStore } from '../context/StoreContext'
 import { PRESET_IMAGES } from './adminData'
+import { Dropdown } from './Dropdown'
 
 export function AdminCategories() {
   const { products, categories, addCategory, updateCategory, deleteCategory, categoryInUse } = useStore()
@@ -122,16 +123,15 @@ export function AdminCategories() {
             <span>Name (MK)</span>
             <input value={labelMk} onChange={(e) => setLabelMk(e.target.value)} placeholder="Чорапи" />
           </label>
-          <label className="adm-field">
+          <div className="adm-field">
             <span>Cover image</span>
-            <select value={image} onChange={(e) => setImage(e.target.value)}>
-              {PRESET_IMAGES.map((img) => (
-                <option key={img.value} value={img.value}>
-                  {img.label}
-                </option>
-              ))}
-            </select>
-          </label>
+            <Dropdown
+              value={image}
+              onChange={setImage}
+              label="Cover image"
+              options={PRESET_IMAGES.map((img) => ({ value: img.value, label: img.label }))}
+            />
+          </div>
           {error && <p className="adm-error">{error}</p>}
           <button type="submit" className="adm-btn adm-btn--lime">
             Create category
