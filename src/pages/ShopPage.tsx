@@ -115,7 +115,7 @@ export function ShopPage() {
           <p className="shop-sub">
             {gender !== 'all'
               ? t(lang, 'Сите модели за тебе, вклучително и унисекс парчиња.', 'Every piece for you, including unisex styles.')
-              : t(lang, `Сите достапни модели • Цени од ${formatMkd(cheapest)} • Бесплатна достава над 3,500 MKD`, `Every available piece • Prices from ${formatMkd(cheapest)} • Free delivery over 3,500 MKD`)}
+              : t(lang, `Сите достапни модели • Цени од ${formatMkd(cheapest)} • Бесплатна достава над 3,500 MKD`, `Every available piece • Prices from ${formatMkd(cheapest)} • Free delivery over 3,500 MKD`, `Çdo artikull i disponueshëm • Çmime nga ${formatMkd(cheapest)} • Dërgim falas mbi 3,500 MKD`)}
           </p>
 
           <div className="gender-switch" role="tablist" aria-label="Shop by gender">

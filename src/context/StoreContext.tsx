@@ -365,7 +365,7 @@ export function StoreProvider({ children }: { children: ReactNode }) {
     }
     setAppliedCode(match.code)
     const label = match.type === 'percent' ? `${match.value}%` : `${match.value} MKD`
-    showToast(t(lang, `Применет попуст ${label}!`, `Applied ${label} off with ${match.code}!`))
+    showToast(t(lang, `Применет попуст ${label}!`, `Applied ${label} off with ${match.code}!`, `U aplikua ${label} zbritje me ${match.code}!`))
     return { ok: true, message: `${match.code} applied` }
   }
 
@@ -460,7 +460,7 @@ export function StoreProvider({ children }: { children: ReactNode }) {
     const existing = cart.find((i) => i.product.id === product.id && i.size === size)
     if (existing && existing.quantity >= available) {
       showToast(
-        t(lang, `Достапни се само ${available} пара во овој број.`, `Only ${available} left in that size.`),
+        t(lang, `Достапни се само ${available} пара во овој број.`, `Only ${available} left in that size.`, `Vetëm ${available} mbetur në atë madhësi.`),
       )
       return
     }
@@ -475,7 +475,7 @@ export function StoreProvider({ children }: { children: ReactNode }) {
     })
     setCartOpen(true)
     showToast(
-      t(lang, `Додадено: ${product.name} (${size})`, `Added ${product.name} (${size}) to bag`),
+      t(lang, `Додадено: ${product.name} (${size})`, `Added ${product.name} (${size}) to bag`, `U shtua ${product.name} (${size}) në çantë`),
     )
   }
 

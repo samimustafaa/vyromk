@@ -48,7 +48,7 @@ export function ProductCard({ product, theme = 'light' }: ProductCardProps) {
         </button>
         {totalStock > 0 && totalStock <= 6 && (
           <span className="low-stock-flag">
-            {t(lang, `Само ${totalStock} останати`, `Only ${totalStock} left`)}
+            {t(lang, `Само ${totalStock} останати`, `Only ${totalStock} left`, `Vetëm ${totalStock} mbetur`)}
           </span>
         )}
       </div>

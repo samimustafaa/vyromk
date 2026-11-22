@@ -1,14 +1,34 @@
 /**
  * Post-build SEO step.
  *
- * Copies the Vite bundle into `dist/` route folders and writes a real HTML head
- * for every page (home, shop, each product, about, saved, track order) plus
- * sitemap.xml and robots.txt. Crawlers and AI assistants that do not run
- * JavaScript still get a title, description, canonical URL and product schema.
+ * Writes a real HTML head for every page (home, shop, each product, about)
+ * plus sitemap.xml, robots.txt and llms.txt, so crawlers and AI assistants
+ * that do not run JavaScript still see titles, descriptions, canonicals and
+ * product schema.
+ *
+ * The metadata helpers live in TypeScript, so they are loaded through Vite's
+ * SSR module loader instead of being duplicated here.
  */
 import { mkdirSync, readFileSync, writeFileSync, existsSync } from 'node:fs'
-import { dirname, join } from 'node:path'
-import {
+import { join } from 'node:path'
+import { createServer } from 'vite'
+
+const vite = await createServer({
+  configFile: false,
+  logLevel: 'error',
+  appType: 'custom',
+  server: { middlewareMode: true },
+})
+
+let meta, data
+try {
+  meta = await vite.ssrLoadModule('/src/seo/meta.ts')
+  data = await vite.ssrLoadModule('/src/data/products.ts')
+} finally {
+  await vite.close()
+}
+
+const {
   SITE_URL,
   homeMeta,
   productMeta,
@@ -16,43 +36,33 @@ import {
   shopMeta,
   siteKeywords,
   staticMeta,
-  type PageMeta,
-} from '../src/seo/meta.ts'
-import { DEFAULT_CATEGORIES, PRODUCTS } from '../src/data/products.ts'
+} = meta
+const { PRODUCTS } = data
 
 const DIST = 'dist'
 const template = readFileSync(join(DIST, 'index.html'), 'utf8')
 
-function withHead(meta: PageMeta): string {
+function withHead(meta) {
   // Drop the template's own title/description so the page head is authoritative.
   let html = template
     .replace(/<title>[\s\S]*?<\/title>\s*/i, '')
     .replace(/<meta\s+name="description"[\s\S]*?\/>\s*/i, '')
+    .replace(/<html lang="[^"]*"/i, '<html lang="mk"')
   html = html.replace('</head>', `    ${renderMetaTags(meta)}\n  </head>`)
   return html
 }
 
-function writePage(path: string, html: string) {
+function writePage(path, html) {
   const dir = path === '/' ? join(DIST) : join(DIST, path.replace(/^\//, ''))
   mkdirSync(dir, { recursive: true })
   writeFileSync(join(dir, 'index.html'), html)
 }
 
-const pages: { path: string; meta: PageMeta; priority: string }[] = [
+const pages = [
   { path: '/', meta: homeMeta(PRODUCTS), priority: '1.0' },
   { path: '/shop', meta: shopMeta('mk', PRODUCTS, {}), priority: '0.9' },
-  { path: '/shop/men', meta: shopMeta('mk', PRODUCTS, { gender: 'men' }), priority: '0.9' },
-  { path: '/shop/women', meta: shopMeta('mk', PRODUCTS, { gender: 'women' }), priority: '0.9' },
   { path: '/about', meta: staticMeta('/about'), priority: '0.5' },
 ]
-
-for (const category of DEFAULT_CATEGORIES) {
-  pages.push({
-    path: `/shop/category/${category.slug}`,
-    meta: shopMeta('mk', PRODUCTS.filter((p) => p.category === category.slug), { category }),
-    priority: '0.8',
-  })
-}
 
 for (const product of PRODUCTS) {
   pages.push({

@@ -47,7 +47,7 @@ export function CheckoutModal() {
     })
     setOrderRef(ref)
     clearCart()
-    showToast(t(lang, `Нарачката ${ref} е примена!`, `Order ${ref} confirmed!`))
+    showToast(t(lang, `Нарачката ${ref} е примена!`, `Order ${ref} confirmed!`, `Porosia ${ref} u konfirmua!`))
   }
 
   const handleClose = () => {
@@ -79,7 +79,7 @@ export function CheckoutModal() {
           <div className="order-success">
             <div className="order-ref-badge">{orderRef}</div>
             <p className="order-success-lead">
-              {t(lang, `Ти благодариме, ${name}! Твојата нарачка ќе биде испратена во рок од 24–48 часа во ${city}. Плаќаш директно на курирот при достава.`, `Thank you, ${name}! Your order will ship within 24–48h to ${city}. Pay directly to the courier on delivery.`)}
+              {t(lang, `Ти благодариме, ${name}! Твојата нарачка ќе биде испратена во рок од 24–48 часа во ${city}. Плаќаш директно на курирот при достава.`, `Thank you, ${name}! Your order will ship within 24–48h to ${city}. Pay directly to the courier on delivery.`, `Faleminderit, ${name}! Porosia dërgohet brenda 24–48 orësh në ${city}. Paguaj kurierit në dorëzim.`)}
             </p>
             <p className="order-success-sub">
               {t(lang, 'За промена на број или прашања, пиши ни на @vyro.mk.', 'Need a size swap or update? Message us anytime at @vyro.mk.')}
@@ -91,7 +91,7 @@ export function CheckoutModal() {
         ) : (
           <form className="checkout-form" onSubmit={handleSubmit}>
             <p className="checkout-note">
-              {t(lang, `Плаќање при достава • Вкупно: ${formatMkd(totalMkd)} (${cart.reduce((s, i) => s + i.quantity, 0)} производи)`, `Cash on delivery • Total: ${formatMkd(totalMkd)} (${cart.reduce((s, i) => s + i.quantity, 0)} items)`)}
+              {t(lang, `Плаќање при достава • Вкупно: ${formatMkd(totalMkd)} (${cart.reduce((s, i) => s + i.quantity, 0)} производи)`, `Cash on delivery • Total: ${formatMkd(totalMkd)} (${cart.reduce((s, i) => s + i.quantity, 0)} items)`, `Pagesë në dorëzim • Total: ${formatMkd(totalMkd)} (${cart.reduce((s, i) => s + i.quantity, 0)} artikuj)`)}
             </p>
 
             <label className="field">

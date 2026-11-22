@@ -193,7 +193,7 @@ export function ProductDetailPage() {
                     : selectedStock === 0
                       ? t(lang, 'Овој број е распродаден — избери друг', 'This size is sold out — pick another')
                       : selectedStock <= 3
-                        ? t(lang, `Само ${selectedStock} останати — побрзај`, `Only ${selectedStock} left — order soon`)
+                        ? t(lang, `Само ${selectedStock} останати — побрзај`, `Only ${selectedStock} left — order soon`, `Vetëm ${selectedStock} mbetur — porosit shpejt`)
                         : t(lang, 'На залиха • Испорака за 24ч', 'In stock • Ships within 24h')}
                 </p>
               </div>
@@ -207,7 +207,7 @@ export function ProductDetailPage() {
                 >
                   {selectedStock === 0
                     ? t(lang, 'Распродадено', 'Sold out')
-                    : t(lang, `Додај во кошничка — ${formatMkd(product.priceMkd)}`, `Add to Bag — ${formatMkd(product.priceMkd)}`)}
+                    : t(lang, `Додај во кошничка — ${formatMkd(product.priceMkd)}`, `Add to Bag — ${formatMkd(product.priceMkd)}`, `Shto në çantë — ${formatMkd(product.priceMkd)}`)}
                 </button>
                 <div className="pdp-secondary-actions">
                   <button
@@ -227,7 +227,7 @@ export function ProductDetailPage() {
               </div>
 
               <div className="pdp-perks">
-                <span>{t(lang, `Бесплатна достава над ${formatMkd(settings.freeShippingMkd)}`, `Free delivery over ${formatMkd(settings.freeShippingMkd)}`)}</span>
+                <span>{t(lang, `Бесплатна достава над ${formatMkd(settings.freeShippingMkd)}`, `Free delivery over ${formatMkd(settings.freeShippingMkd)}`, `Dërgim falas mbi ${formatMkd(settings.freeShippingMkd)}`)}</span>
                 <span>{t(lang, 'Плаќање при достава', 'Cash on delivery')}</span>
                 <span>{t(lang, '7 дена замена', '7-day size swap')}</span>
               </div>

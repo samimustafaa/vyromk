@@ -136,7 +136,7 @@ export function HomePage() {
               </p>
             </div>
             <Link to="/shop" className="btn btn-outline-dark">
-              {t(lang, `Види ги сите (${products.length})`, `View All (${products.length})`)}
+              {t(lang, `Види ги сите (${products.length})`, `View All (${products.length})`, `Shiko të gjitha (${products.length})`)}
             </Link>
           </div>
 

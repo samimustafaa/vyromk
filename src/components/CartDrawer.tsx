@@ -92,7 +92,7 @@ export function CartDrawer() {
             <p className="shipping-bar-text">
               {remainingForFree === 0
                 ? t(lang, 'Отклучена е бесплатна достава!', 'You unlocked free delivery!')
-                : t(lang, `Уште ${formatMkd(remainingForFree)} до бесплатна достава`, `Add ${formatMkd(remainingForFree)} more for free delivery`)}
+                : t(lang, `Уште ${formatMkd(remainingForFree)} до бесплатна достава`, `Add ${formatMkd(remainingForFree)} more for free delivery`, `Shto ${formatMkd(remainingForFree)} më shumë për dërgim falas`)}
             </p>
             <div className="shipping-track">
               <div className="shipping-fill" style={{ width: `${progressPct}%` }} />
