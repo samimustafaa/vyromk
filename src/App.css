@@ -5266,6 +5266,32 @@ a.gender-tag {
     flex: 1;
     text-align: center;
   }
+
+  /* Keep row actions reachable when a wide table scrolls sideways. */
+  .adm-table thead th,
+  .adm-table tbody td {
+    padding: 0.5rem 0.7rem;
+  }
+
+  .adm-table thead th:last-child,
+  .adm-table tbody td:last-child {
+    position: sticky;
+    right: 0;
+    z-index: 2;
+  }
+
+  .adm-table thead th:last-child {
+    background: #131313;
+  }
+
+  .adm-table tbody td:last-child {
+    background: var(--adm-panel);
+    box-shadow: -10px 0 12px -8px rgba(0, 0, 0, 0.75);
+  }
+
+  .adm-table tbody tr:hover td:last-child {
+    background: #1b1b1b;
+  }
 }
 
 @media (max-width: 420px) {
