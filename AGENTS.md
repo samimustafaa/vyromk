@@ -23,3 +23,9 @@ freecode reads this file before every change. Add anything it should always reme
 - Shared admin helpers (`PRESET_IMAGES`, `shortMkd`, `linePath`, `daysAgo`, `dayLabel`) live in `src/admin/adminData.ts`.
 - `src/pages/AdminPage.tsx` was removed in the split; don't reintroduce a monolithic admin page.
 - Local persistence only: admin and storefront data is per-browser localStorage. A real deployment needs a backend + server-side auth before this is multi-user.
+
+## Shipping
+
+- Remote: `origin` → https://github.com/samimustafaa/vyromk.git, branch `main`.
+- The owner wants every change pushed. After a change builds and is verified, commit it and `git push origin main` in the same turn. Conventional-ish messages are fine; keep each push scoped to the change just made.
+- Credentials live in `~/.git-credentials` (git credential helper `store`, local config). Never print, commit or copy that file. If a push fails with an auth error, ask for a fresh GitHub device-login approval instead of trying to read the token.
